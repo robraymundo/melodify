@@ -160,4 +160,4 @@ class SongTracker:
 
 pygame.init()
 pygame.mixer.init()
-App('Music', (400, 200))
+App('Melodify', (500, 200))
