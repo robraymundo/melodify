@@ -12,7 +12,7 @@ class App(tk.Tk):
         self.geometry(f'{size[0]}x{size[1]}')
         self.maxsize(size[0], size[1])
 
-        self.config(bg='#212024')
+        self.config(bg='#282424')
 
         # buttons
         self.menu = Menu(self)
@@ -35,43 +35,62 @@ class Menu(tk.Frame):
         self.prev_icon = tk.PhotoImage(file='graphics/previous_button.png')
         self.pause_icon = tk.PhotoImage(file='graphics/pause_button.png')
 
-        # title label
-        tk.Label(self, textvariable=self.track_song.title_text, font=('MS Sans Serif', 20),
-                 fg='white', bg='#212024', width=30, height=1, anchor=tk.NW).place(relx=0, y=0, rely=0)
+        # buttons
+        self.play_button = None
+        self.next_button = None
+        self.prev_button = None
+        self.resume_button = None
+        self.pause_button = None
 
-        # artist label
-        tk.Label(self, textvariable=self.track_song.artist_text, font=('MS Sans Serif', 15),
-                 fg='#c9c9c9', bg='#212024', width=20, height=1, anchor=tk.NW).place(relx=0.025, y=0, rely=0.2)
 
         # button frame
+        self.button_frame = tk.Frame(self, bg='#212024')
         self.create_buttons()
+        self.create_label()
 
         # track song status
         self.song_status = 'idle'
 
+    def create_label(self):
+        tk.Label(self, text="Library", font=('MS Sans Serif', 20),
+                 fg='white', bg='#212024', padx=10, anchor=tk.NW).pack(side="top", anchor="nw")
+
+        tk.Label(self, textvariable=self.track_song.artist_text, font=('MS Sans Serif', 15),
+                 fg='#c9c9c9', bg='#212024', padx=20, anchor=tk.NW).pack(side="bottom", anchor="nw")
+
+        tk.Label(self, textvariable=self.track_song.title_text, font=('MS Sans Serif', 20),
+                 fg='white', bg='#212024', padx=10, anchor=tk.NW).pack(side="bottom", anchor="nw")
+
+
+
     def create_buttons(self):
-        play_button = tk.Button(self, image=self.play_icon, activebackground='#212024', bg='#212024',
+        self.play_button = tk.Button(self.button_frame, image=self.play_icon, activebackground='#212024', bg='#212024',
                                 relief='flat', overrelief='flat', command=lambda: self.play_song())
-        next_button = tk.Button(self, image=self.next_icon, activebackground='#212024', bg='#212024',
+        self.next_button = tk.Button(self.button_frame, image=self.next_icon, activebackground='#212024', bg='#212024',
                                 relief='flat', overrelief='flat', command=lambda: self.next_song())
-        prev_button = tk.Button(self, image=self.prev_icon, activebackground='#212024', bg='#212024',
+        self.prev_button = tk.Button(self.button_frame, image=self.prev_icon, activebackground='#212024', bg='#212024',
                                 relief='flat', overrelief='flat', command=lambda: self.prev_song())
 
-        play_button.place(relx=0.4, y=0, relwidth=0.2, rely=0.4)
-        next_button.place(relx=0.6, y=0, relwidth=0.2, rely=0.4)
-        prev_button.place(relx=0.2, y=0, relwidth=0.2, rely=0.4)
+        self.prev_button.grid(row=0, column=0)
+        self.play_button.grid(row=0, column=1)
+        self.next_button.grid(row=0, column=2)
+
+        self.button_frame.pack(side="bottom", pady=10)
 
     def show_pause_button(self):
-        pause_button = tk.Button(self, image=self.pause_icon, activebackground='#212024', bg='#212024',
+        self.play_button.destroy()
+        self.pause_button = tk.Button(self.button_frame, image=self.pause_icon, activebackground='#212024', bg='#212024',
                                  relief='flat', overrelief='flat', command=lambda: self.show_resume_button())
-        pause_button.place(relx=0.4, y=0, relwidth=0.2, rely=0.4)
+        self.pause_button.grid(row=0, column=1)
 
     def show_resume_button(self):
         self.song_status = 'paused'
         pygame.mixer.music.pause()
-        resume_button = tk.Button(self, image=self.play_icon, activebackground='#212024', bg='#212024',
+
+        self.pause_button.destroy()
+        self.resume_button = tk.Button(self.button_frame, image=self.play_icon, activebackground='#212024', bg='#212024',
                                   relief='flat', overrelief='flat', command=lambda: self.play_song())
-        resume_button.place(relx=0.4, y=0, relwidth=0.2, rely=0.4)
+        self.resume_button.grid(row=0, column=1)
 
     def play_song(self):
         if self.song_status == 'idle':
@@ -157,7 +176,6 @@ class SongTracker:
 
         pygame.mixer.music.load(f'music_folder/{self.current_song.data}')
 
-
 pygame.init()
 pygame.mixer.init()
-App('Melodify', (500, 200))
+App('Melodify', (700, 400))
