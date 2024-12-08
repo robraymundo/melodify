@@ -57,8 +57,7 @@ class Menu(tk.Frame):
                         background='white',
                         foreground='#444',
                         troughcolor='#212024',
-                        borderwidth=0,
-                        )
+                        borderwidth=0,)
 
         self.progress_bar = None
         self.create_progress_bar()
